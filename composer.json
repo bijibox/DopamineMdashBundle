@@ -1,0 +1,28 @@
+{
+    "name": "dopamine/mdash-bundle",
+    "type": "symfony-bundle",
+    "description": "Evgeny Muravjev Typograph bundle",
+    "license": "MIT",
+    "keywords": ["typograph", "typograf"],
+    "authors": [
+        {
+            "name": "Nikita Starshinov",
+            "email": "bijibox@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url":  "https://github.com/bijibox/mdash"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "symfony/framework-bundle": "2.*",
+        "emuravjev/mdash": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "Dopamine\\MdashBundle": "" }
+    },
+    "target-dir": "Dopamine/MdashBundle"
+}
