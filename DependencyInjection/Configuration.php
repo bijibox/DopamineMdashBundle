@@ -32,9 +32,8 @@ class Configuration implements ConfigurationInterface
         $typographOptions = $this->getTypographOptions();
 
         foreach ($typographOptions['all'] as $optionName => $optionData) {
-            $configOptionName = self::mdashOptionNameToConfig($optionName);
             $configPrototype
-                ->scalarNode($configOptionName)
+                ->scalarNode(self::mdashOptionNameToConfig($optionName))
                 ->info(
                     $optionData['description'] .
                     (empty($optionData['disabled']) ? '' : ' *по умолчанию отключено')

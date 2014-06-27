@@ -21,25 +21,39 @@ class DopamineMdashExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
 
-        if (!isset($config['configs']['default'])) {
-            $config['configs']['default'] = array();
-        }
+        $typographOptions = $this->preProcessConfigs($config['configs']);
 
-        $this->configureTypographServices($config['configs'], $container);
+        $this->configureTypographServices($typographOptions, $container);
     }
 
-    private function configureTypographServices($configs, ContainerBuilder $container)
+    protected function preProcessConfigs($configs)
     {
-        foreach ($configs as $configName => $configOptions) {
-            $baseDefinition = new DefinitionDecorator('dopamine_mdash.prototype.typograph');
+        if (!isset($configs['default'])) {
+            $configs['default'] = array();
+        }
 
-            $serviceOptions = array();
-            foreach ($configOptions as $optionName => $optionValue) {
-                if (!empty($optionValue)) {
-                    $serviceOptions[ Configuration::configOptionNameToMdash($optionName) ] = $optionValue;
+        $typographOptions = array();
+        foreach ($configs as $configName => $options) {
+            $typographOptions[$configName] = array();
+
+            foreach ($options as $option => $value) {
+                if (!empty($value)) {
+                    $typographOptions[$configName][Configuration::configOptionNameToMdash($option)] = $value;
                 }
             }
-            $baseDefinition->addMethodCall('setup', $serviceOptions);
+        }
+
+        return $typographOptions;
+    }
+
+    private function configureTypographServices($typographOptions, ContainerBuilder $container)
+    {
+        foreach ($typographOptions as $configName => $options) {
+            $baseDefinition = new DefinitionDecorator('dopamine_mdash.prototype.typograph');
+
+            if (!empty($options)) {
+                $baseDefinition->addMethodCall('setup', array($options));
+            }
 
             $serviceName = "dopamine_mdash.typograph." . $configName;
             $container->setDefinition($serviceName, $baseDefinition);
