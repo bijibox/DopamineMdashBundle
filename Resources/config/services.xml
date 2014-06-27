@@ -4,17 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="dopamine_mdash.example.class">Dopamine\MdashBundle\Example</parameter>
+        <parameter key="dopamine_mdash.typograph.class">EMTypograph</parameter>
     </parameters>
 
     <services>
-        <service id="dopamine_mdash.example" class="%dopamine_mdash.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="dopamine_mdash.prototype.typograph" class="%dopamine_mdash.typograph.class%" abstract="true">
         </service>
     </services>
-    -->
 </container>

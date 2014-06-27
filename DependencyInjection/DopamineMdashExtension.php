@@ -2,16 +2,12 @@
 
 namespace Dopamine\MdashBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-/**
- * This is the class that loads and manages your bundle configuration
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
- */
 class DopamineMdashExtension extends Extension
 {
     /**
@@ -22,7 +18,31 @@ class DopamineMdashExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+
+        if (!isset($config['configs']['default'])) {
+            $config['configs']['default'] = array();
+        }
+
+        $this->configureTypographServices($config['configs'], $container);
+    }
+
+    private function configureTypographServices($configs, ContainerBuilder $container)
+    {
+        foreach ($configs as $configName => $configOptions) {
+            $baseDefinition = new DefinitionDecorator('dopamine_mdash.prototype.typograph');
+
+            $serviceOptions = array();
+            foreach ($configOptions as $optionName => $optionValue) {
+                if (!empty($optionValue)) {
+                    $serviceOptions[ Configuration::configOptionNameToMdash($optionName) ] = $optionValue;
+                }
+            }
+            $baseDefinition->addMethodCall('setup', $serviceOptions);
+
+            $serviceName = "dopamine_mdash.typograph." . $configName;
+            $container->setDefinition($serviceName, $baseDefinition);
+        }
     }
 }
