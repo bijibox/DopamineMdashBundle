@@ -2,14 +2,10 @@
 
 namespace Dopamine\MdashBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-/**
- * This is the class that validates and merges configuration from your app/config files
- *
- * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
- */
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -20,10 +16,53 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('dopamine_mdash');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $configPrototype = $rootNode
+            ->children()
+                ->arrayNode('configs')
+                    ->prototype('array')
+                        ->children();
+
+        $this->buildConfigPrototype($configPrototype);
 
         return $treeBuilder;
+    }
+
+    private function buildConfigPrototype(NodeBuilder $configPrototype)
+    {
+        $typographOptions = $this->getTypographOptions();
+
+        foreach ($typographOptions['all'] as $optionName => $optionData) {
+            $configOptionName = self::mdashOptionNameToConfig($optionName);
+            $configPrototype
+                ->scalarNode($configOptionName)
+                ->info(
+                    $optionData['description'] .
+                    (empty($optionData['disabled']) ? '' : ' *по умолчанию отключено')
+                )
+                ->defaultNull()
+                ->treatTrueLike('on')
+                ->treatFalseLike('off')
+                ->validate()
+                    ->ifNotInArray([null, 'on', 'off'])
+                        ->thenInvalid('"on" (true), "off" (false) or null for default is allowed')
+                    ->end()
+                ->end();
+        }
+    }
+
+    private function getTypographOptions()
+    {
+        $typograph = new \EMTypograph();
+        return $typograph->get_options_list();
+    }
+
+    public static function mdashOptionNameToConfig($optionName)
+    {
+        return str_replace('.', '__', $optionName);
+    }
+
+    public static function configOptionNameToMdash($optionName)
+    {
+        return str_replace('__', '.', $optionName);
     }
 }
