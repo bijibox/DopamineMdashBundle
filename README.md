@@ -46,7 +46,7 @@ Configuration
 You can use every option supported by `mdash`. The reference is always available via `config:dump-reference` console command:
 
 ```bash
-$ ./app/console config:dump-reference dompamine_mdash
+$ ./app/console config:dump-reference dopamine_mdash
 ```
 
 Edit `config.yml` to define as many sets of options as you need:
