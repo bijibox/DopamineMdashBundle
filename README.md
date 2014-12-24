@@ -25,7 +25,7 @@ Installation
 Install the bundle with the help of [Composer](https://getcomposer.org):
 
 ```bash
-php composer.phar require Dopamine/MdashBundle:dev-master
+$ php composer.phar require Dopamine/MdashBundle:dev-master
 ```
 
 And enable it in your `AppKernel.php`:
@@ -43,7 +43,13 @@ And enable it in your `AppKernel.php`:
 Configuration
 -------------
 
-You can define several different sets of options at once in `config.yml`. Every existing option of `mdash` is supported, you only need to replace dots in option's name with double underscores and use `true` and `false` in place of `'on'` and `'off'`:
+You can use every option supported by `mdash`. The reference is always available via `config:dump-reference` console command:
+
+```bash
+$ ./app/console config:dump-reference dopamine_mdash
+```
+
+Edit `config.yml` to define as many sets of options as you need:
 
 ```yaml
 # app/config.yml
