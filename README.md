@@ -25,7 +25,7 @@ Installation
 Install the bundle with the help of [Composer](https://getcomposer.org):
 
 ```bash
-$ php composer.phar require Dopamine/MdashBundle:dev-master
+$ php composer.phar require dopamine/mdash-bundle:dev-master
 ```
 
 And enable it in your `AppKernel.php`:
